@@ -1,27 +1,27 @@
-This is an inline $\sqrt{x + 10}$ math expression.
+# Beau McCartney
 
-It's better to get that $$ \left( \sum_{k=1}^n a_k b_k \right)^2 $$
-on its own line. A math block may also be more convenient:
+Heyo! I'm Beau. I'm a new graduate in Software Engineering from the University
+of Calgary (May 2024). I like graphics programming, playing music, and reading
+about history.
 
-```math
-\left( \sum_{k=1}^n a_k b_k \right)^2 < \Phi
-```
+I'm currently looking for my next opportunity, please [contact
+me](#contact-info) if you're interested in working with me!
 
-```c
-#include <stdio.h>
+## Projects
 
-int main(void)
-{
-    puts("hey");
-}
-```
+- root_c ([github](https://github.com/beaumccartney/root_c)) - my all in one, from scratch, C99 codebase for for everything
+    - base utilities
+    - rendering abstraction
+    - c code generator from a custom file format
+    - a whole bunch more stuff
 
-```python
-from pygments import highlight
-from pygments.lexers import get_lexer_by_name
-from pygments.formatters import HtmlFormatter
+## Random thoughts (maybe blog posts??)
 
-lexer = get_lexer_by_name("python", stripall=True)
-formatter = HtmlFormatter(linenos=True, cssclass="source")
-result = highlight(code, lexer, formatter)
-```
+- [3 => 3 major => 6 => 2 => 5 sounds awesome](https://youtu.be/9xA1rSu3qwE?si=guriIWYQWgoOId3p&t=43)
+- [working with win32 COM in pure c isn't so bad](https://github.com/beaumccartney/root_c/blob/036174bebc623040def0976ccd79daebd306b25c/layers/os/core/windows/os_core_windows.h#L52-L54)
+    - [same with direct3D](https://github.com/beaumccartney/root_c/blob/036174bebc623040def0976ccd79daebd306b25c/layers/render/d3d11/render_d3d11.h#L151-L163)
+
+## <span id="contact-info">Contact</span>
+
+- github: <a href="https://github.com/beaumccartney" target="_blank">https://github.com/beaumccartney</a>
+- email: <a href="mailto:mccartney.beausl@gmail.com" >mccartney.beausl@gmail.com</a>
