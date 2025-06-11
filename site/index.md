@@ -25,3 +25,8 @@ me](#contact-info) if you're interested in working with me!
 
 - github: <a href="https://github.com/beaumccartney" target="_blank">https://github.com/beaumccartney</a>
 - email: <a href="mailto:mccartney.beausl@gmail.com+website" >mccartney.beausl@gmail.com</a>
+
+## Posts
+
+<ul id="blog-entries">
+</ul>

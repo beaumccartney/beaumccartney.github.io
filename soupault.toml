@@ -107,6 +107,25 @@
   page_character_encoding = "utf-8"
 
 
+[index.fields.title]
+  selector = ["h1"]
+[index.fields.publish_date]
+  selector = ["time#publish-date"]
+  extract_attribute = "datetime"
+  fallback_to_content = true
+
+[index.views.posts-index]
+  section = "blog/"
+  sort_by = "publish_date"
+  sort_descending = true
+  date_formats = ["%F"]
+  index_selector = "#blog-entries"
+
+  # Jingoo template for rendering extracted metadata
+  index_item_template = """<li><time datetime="{{publish_date}}">{{publish_date}}</time> - <a href="{{url}}">{{title}}</a></li>"""
+
+[index.views.posts-index.fields.title]
+
 # It is possible to store pages in any format if you have a program
 # that converts it to HTML and writes it to standard output.
 # For example, if you want to use cmark instead of the built-in Markdown,
