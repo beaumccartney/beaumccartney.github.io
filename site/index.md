@@ -15,7 +15,7 @@ me](#contact-info) if you're interested in working with me!
     - c code generator from a custom file format
     - a whole bunch more stuff
 
-## Random thoughts (maybe blog posts??)
+## Random thoughts
 
 - [3 => 3 major => 6 => 2 => 5 sounds awesome](https://youtu.be/9xA1rSu3qwE?si=guriIWYQWgoOId3p&t=43)
 - [working with win32 COM in pure c isn't so bad](https://github.com/beaumccartney/root_c/blob/036174bebc623040def0976ccd79daebd306b25c/layers/os/core/windows/os_core_windows.h#L52-L54)
