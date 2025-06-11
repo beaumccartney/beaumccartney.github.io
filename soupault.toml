@@ -126,7 +126,7 @@ date_formats = ["%F"]
 index_selector = "#blog-entries"
 
 # Jingoo template for rendering extracted metadata
-index_item_template = """<li><time datetime="{{publish_date}}">{{publish_date}}</time> - <a href="{{url}}">{{title}}</a></li>"""
+index_item_template = """<li><time>{{publish_date}}</time> - <a href="{{url}}">{{title}}</a></li>"""
 
 # It is possible to store pages in any format if you have a program
 # that converts it to HTML and writes it to standard output.
@@ -158,3 +158,8 @@ selector = "head"
 widget = "preprocess_element"
 selector = '*[class^="language-"]'
 command = 'highlight --out-format=html --fragment --syntax=$(echo $ATTR_CLASS | sed -e "s/language-//")'
+
+[widgets.time-datetime-attrib]
+widget = "element_template"
+selector = "time"
+template = """<time datetime="{{content}}">{{content}}</time>"""
