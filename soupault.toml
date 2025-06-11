@@ -12,6 +12,8 @@
   # Display detailed debug output?
   debug = true
 
+  strict = true
+
   # Where input files (pages and assets) are stored.
   site_dir = "site"
 
