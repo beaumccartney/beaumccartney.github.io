@@ -12,8 +12,6 @@ verbose = true
 # Display detailed debug output?
 debug = true
 
-strict = true
-
 # Where input files (pages and assets) are stored.
 site_dir = "site"
 
@@ -71,8 +69,7 @@ default_template_file = "templates/main.html"
 
 # Page content is inserted into a certain element of the page template.
 # This option is a CSS selector that is used for locating that element.
-# By default the content is inserted into the <body>
-default_content_selector = "body"
+default_content_selector = "main"
 
 # You can choose where exactly to insert the content in its parent element.
 # The default is append_child, but there are more, including prepend_child and replace_content
@@ -163,3 +160,26 @@ command = 'highlight --out-format=html --fragment --syntax=$(echo $ATTR_CLASS | 
 widget = "element_template"
 selector = "time"
 template = """<time datetime="{{content}}">{{content}}</time>"""
+
+[widgets.insert-footnotes-container]
+widget = "insert-if"
+
+selector = "main"
+check_selector = "fn"
+html = """
+<hr/>
+<div id="footnotes"></div>
+""" # REVIEW: something semantically appropritate?
+
+[widgets.footnotes]
+widget = "footnotes"
+
+after = "insert-footnotes-container"
+
+footnote_template = "<p></p>"
+selector = "div#footnotes"
+footnote_selector = ["fn"]
+footnote_link_class = "footnote"
+back_links = true
+link_id_prepend = "footnote-"
+back_link_id_append = "-ref"
