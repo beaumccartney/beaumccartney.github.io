@@ -36,10 +36,10 @@ jobs:
         run: |
           echo Downloading and unpacking soupault
           wget https://github.com/PataphysicalSociety/soupault/releases/download/$SOUPAULT_VERSION/$SOUPAULT_FOLDER.tar.gz
-          tar xvf soupault-$SOUPAULT_VERSION-linux-x86_64.tar.gz
+          tar xvf $SOUPAULT_FOLDER.tar.gz
           sudo mv -v ./$SOUPAULT_FOLDER/soupault /usr/bin
 
-      # linux highlight package is outdates
+      # linux highlight package is outdated
       - uses: Homebrew/actions/setup-homebrew@master
       - name: Install brew deps
         run: |
