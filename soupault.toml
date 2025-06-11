@@ -107,6 +107,8 @@
   page_character_encoding = "utf-8"
 
 
+[index]
+  index = true
 [index.fields.title]
   selector = ["h1"]
 [index.fields.publish_date]
