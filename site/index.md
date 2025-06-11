@@ -24,4 +24,4 @@ me](#contact-info) if you're interested in working with me!
 ## <span id="contact-info">Contact</span>
 
 - github: <a href="https://github.com/beaumccartney" target="_blank">https://github.com/beaumccartney</a>
-- email: <a href="mailto:mccartney.beausl@gmail.com" >mccartney.beausl@gmail.com</a>
+- email: <a href="mailto:mccartney.beausl@gmail.com+website" >mccartney.beausl@gmail.com</a>
