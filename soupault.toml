@@ -10,7 +10,7 @@
   verbose = true
 
   # Display detailed debug output?
-  debug = false
+  debug = true
 
   # Where input files (pages and assets) are stored.
   site_dir = "site"
@@ -98,7 +98,8 @@
   # (page preprocessors and preprocess_element widget commands)
   # to speed up repeated builds.
   # You can disable caching if you don't want it, or set a different cache directory path.
-  caching = true
+  # caching = true
+  caching = false
   cache_dir = ".soupault-cache"
 
   # Soupault supports a variety of page source character encodings,
