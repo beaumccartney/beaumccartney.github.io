@@ -9,7 +9,7 @@ me](#contact-info) if you're interested in working with me!
 
 ## Projects
 
-- root_c ([github](https://github.com/beaumccartney/root_c)) - my all in one, from scratch, C99 codebase for for everything
+- root_c <a href="https://github.com/beaumccartney/root_c" target="_blank">github</a> - my all in one, from scratch, C99 codebase for for everything
     - base utilities
     - rendering abstraction
     - c code generator from a custom file format
@@ -17,9 +17,9 @@ me](#contact-info) if you're interested in working with me!
 
 ## Random thoughts
 
-- [3 => 3 major => 6 => 2 => 5 sounds awesome](https://youtu.be/9xA1rSu3qwE?si=guriIWYQWgoOId3p&t=43)
-- [working with win32 COM in pure c isn't so bad](https://github.com/beaumccartney/root_c/blob/036174bebc623040def0976ccd79daebd306b25c/layers/os/core/windows/os_core_windows.h#L52-L54)
-    - [same with direct3D](https://github.com/beaumccartney/root_c/blob/036174bebc623040def0976ccd79daebd306b25c/layers/render/d3d11/render_d3d11.h#L151-L163)
+- <a href="https://youtu.be/9xA1rSu3qwE?si=guriIWYQWgoOId3p&t=43" target="_blank">3 => 3 major => 6 => 2 => 5 sounds awesome</a>
+- <a href="https://github.com/beaumccartney/root_c/blob/036174bebc623040def0976ccd79daebd306b25c/layers/os/core/windows/os_core_windows.h#L52-L54" target="_blank">when working with windows COM APIs in C, some choice macros really help</a>
+    - <a href="https://github.com/beaumccartney/root_c/blob/036174bebc623040def0976ccd79daebd306b25c/layers/render/d3d11/render_d3d11.h#L151-L163" target="_blank">same with direct3D</a>
 
 ## <span id="contact-info">Contact</span>
 
