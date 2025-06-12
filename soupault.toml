@@ -144,13 +144,6 @@ selector = "h1"
 # By default soupault assumes if it's missing, you don't want it.
 force = false
 
-# Inserts a generator meta tag in the page <head>
-# Just for demonstration, feel free to remove
-[widgets.generator-meta]
-widget = "insert_html"
-html = '<meta name="generator" content="soupault">'
-selector = "head"
-
 [widgets.highlight]
 widget = "preprocess_element"
 selector = '*[class^="language-"]'
