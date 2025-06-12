@@ -108,19 +108,22 @@ page_character_encoding = "utf-8"
 
 [index]
 index = true
+# dump_json = "index.json"
 [index.fields.title]
 selector = ["h1"]
 [index.fields.publish_date]
 section = "blog/"
 selector = ["time#publish-date"]
 fallback_to_content = true
+[index.fields.html_content]
+selector = ["main"]
 
 [index.views.posts-index]
 section = "blog/"
 sort_by = "publish_date"
 sort_descending = true
 date_formats = ["%F"]
-index_selector = "#blog-entries"
+index_selector = "#blog-entries > ul"
 
 # Jingoo template for rendering extracted metadata
 index_item_template = """<li><time>{{publish_date}}</time> - <a href="{{url}}">{{title}}</a></li>"""
@@ -134,6 +137,9 @@ index_item_template = """<li><time>{{publish_date}}</time> - <a href="{{url}}">{
 #  adoc = "asciidoctor -o -"
 
 # Pages can be further processed with "widgets"
+
+[custom_options]
+website_url = "https://beaumccartney.com"
 
 # Takes the content of the first <h1> and inserts it into the <title>
 [widgets.page-title]
@@ -176,3 +182,9 @@ footnote_link_class = "footnote"
 back_links = true
 link_id_prepend = "footnote-"
 back_link_id_append = "-ref"
+
+[widgets.rss]
+widget = "gen-rss"
+
+page = "index.md"
+use_section = "blog"
