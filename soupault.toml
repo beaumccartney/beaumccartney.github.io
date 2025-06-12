@@ -108,6 +108,7 @@ page_character_encoding = "utf-8"
 
 [index]
 index = true
+extract_after_widgets = ["footnotes"]
 # dump_json = "index.json"
 [index.fields.title]
 selector = ["h1"]

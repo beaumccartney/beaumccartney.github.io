@@ -11,11 +11,13 @@ local count = size(site_index)
 local i = 1
 while (i <= count) do
 	ix_entry = site_index[i]
+	page_url = String.join("", {website_url, ix_entry.url})
 	entries[i] = {
 		title = ix_entry.title,
-		guid = ix_entry.url,
-		link = ix_entry.url,
+		guid = page_url,
+		link = page_url,
 		description = String.render_template("<![CDATA[{{html_content}}]]>", {html_content = ix_entry.html_content}),
+		-- pubDate = Date.reformat(date_string, {"%Y-%m-%d"}, "%Y-%m-%d %H:%M")
 	}
 	i = i + 1
 end
@@ -32,17 +34,18 @@ data = {
 
 rss_template = [[
 <?xml version="1.0" encoding="UTF-8" ?>
-<rss version="2.0">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 
 <channel>
   <title>Beau McCartney</title>
   <link>{{website_url}}</link>
   <description>Beau McCartney's website and blog</description>
   <language>en-us</language>
+  <atom:link href="{{website_url}}/rss.xml" rel="self" type="application/rss+xml" />
   {%- for e in entries %}
   <item>
     <title>{{e.title}}</title>
-    <link>{{website_url}}{{e.link}}</link>
+    <link>{{e.link}}</link>
     <description>{{e.description}}</description>
     <guid>{{e.guid}}</guid>
   </item>
