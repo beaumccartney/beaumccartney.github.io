@@ -114,7 +114,7 @@ extract_after_widgets = ["footnotes"]
 selector = ["h1"]
 [index.fields.publish_date]
 section = "blog/"
-selector = ["time#publish-date"]
+selector = ["time#publish-date"] # REVIEW: deduplicate - in custom_options?
 fallback_to_content = true
 [index.fields.html_content]
 selector = ["main"]
@@ -189,3 +189,6 @@ widget = "gen-rss"
 
 page = "index.md"
 use_section = "blog"
+date_formats = ["%Y-%m-%d"]
+time_zone = "MST"
+publish_date_selector = "time#publish-date"

@@ -1,9 +1,12 @@
 Plugin.require_version("5.0.0")
 
-custom_options = soupault_config.custom_options
-website_url = custom_options.website_url
+custom_options        = soupault_config.custom_options
+website_url           = custom_options.website_url
 
-use_section = config.use_section
+use_section           = config.use_section
+date_formats          = config.date_formats
+time_zone             = config.time_zone
+publish_date_selector = config.publish_date_selector
 
 entries = {}
 
@@ -11,13 +14,21 @@ local count = size(site_index)
 local i = 1
 while (i <= count) do
 	ix_entry = site_index[i]
-	page_url = String.join("", {website_url, ix_entry.url})
+	page_url = website_url..ix_entry.url
+
+	parsed_html = HTML.parse(ix_entry.html_content)
+	publish_date_elem = HTML.select_one(parsed_html, publish_date_selector) -- TODO: deduplicate with soupault.toml
+	if not publish_date_elem then
+		Plugin.fail("blog entry "..index_entry.url.." does not have a publish date")
+	end
+	entry_date = HTML.inner_html(publish_date_elem)
+
 	entries[i] = {
 		title = ix_entry.title,
 		guid = page_url,
 		link = page_url,
 		description = String.render_template("<![CDATA[{{html_content}}]]>", {html_content = ix_entry.html_content}),
-		-- pubDate = Date.reformat(date_string, {"%Y-%m-%d"}, "%Y-%m-%d %H:%M")
+		pubdate = Date.reformat(entry_date, date_formats, "%a, %d %b %Y 12:00:00") .. " " .. time_zone,
 	}
 	i = i + 1
 end
@@ -30,7 +41,6 @@ data = {
 -- TODO:
 --  channel lastBuildDate
 --  channel pubDate
---  item pubDate
 
 rss_template = [[
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -46,8 +56,9 @@ rss_template = [[
   <item>
     <title>{{e.title}}</title>
     <link>{{e.link}}</link>
-    <description>{{e.description}}</description>
     <guid>{{e.guid}}</guid>
+    <pubDate>{{e.pubdate}}</pubDate>
+    <description>{{e.description}}</description>
   </item>
   {% endfor -%}
 </channel>
