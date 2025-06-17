@@ -151,10 +151,10 @@ selector = "h1"
 # By default soupault assumes if it's missing, you don't want it.
 force = false
 
-[widgets.highlight]
+[widgets.syntax-highlight]
 widget = "preprocess_element"
 selector = '*[class^="language-"]'
-command = 'highlight --out-format=html --fragment --syntax=$(echo $ATTR_CLASS | sed -e "s/language-//")'
+command = 'bun run bun_scripts/syntax-highlight.ts'
 
 [widgets.time-datetime-attrib]
 widget = "element_template"
@@ -192,3 +192,6 @@ use_section = "blog"
 date_formats = ["%Y-%m-%d"]
 time_zone = "MST"
 publish_date_selector = "time#publish-date"
+
+[hooks.post-build]
+file = "hooks/post-build.lua"

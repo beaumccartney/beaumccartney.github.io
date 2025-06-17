@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
 
+bun install
 soupault
-highlight --print-style --style=edit-vim-dark --outdir=build/css # generate highlight.css file
+cp node_modules/highlight.js/styles/base16/gruvbox-dark-medium.min.css build/css/highlight.css

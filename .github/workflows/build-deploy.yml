@@ -39,11 +39,10 @@ jobs:
           tar xvf $SOUPAULT_FOLDER.tar.gz
           sudo mv -v ./$SOUPAULT_FOLDER/soupault /usr/bin
 
-      # linux highlight package is outdated
-      - uses: Homebrew/actions/setup-homebrew@master
-      - name: Install brew deps
-        run: |
-          brew bundle
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
       - name: Build the site
         run: ./build.sh
