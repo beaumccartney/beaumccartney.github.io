@@ -43,7 +43,7 @@ else:
 
 ## Math
 
-Math rendering courtesy of [MathJax](https://www.mathjax.org)<fn>right now it's rendered client-side, can I render offline?</fn>
+Math rendering courtesy of [katex](katex.org)<fn>right now it's rendered client-side, can I render offline?</fn>
 
 Statistical variance can be computed like so: $v = \sum_{i=1}^{n} (x_i - \mu)^2$
 
