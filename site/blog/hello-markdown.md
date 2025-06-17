@@ -53,3 +53,10 @@ $$
 \sigma = \sqrt{\sum_{i=1}^{n} (x_i - \mu)^2}
 $$
 
+
+same but in a math code block
+
+```math
+\sigma = \sqrt{\sum_{i=1}^{n} (x_i - \mu)^2}
+```
+
