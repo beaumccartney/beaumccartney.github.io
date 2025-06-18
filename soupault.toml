@@ -113,7 +113,6 @@ extract_after_widgets = ["footnotes"]
 [index.fields.title]
 selector = ["h1"]
 [index.fields.publish_date]
-section = "blog/"
 selector = ["time#publish-date"] # REVIEW: deduplicate - in custom_options?
 fallback_to_content = true
 [index.fields.html_content]
