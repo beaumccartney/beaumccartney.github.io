@@ -26,7 +26,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout website
         uses: actions/checkout@v4
         # TODO: sparse checkout only needed files
       - name: Install soupault
@@ -46,6 +46,18 @@ jobs:
 
       - name: Build the site
         run: ./build.sh
+
+      - name: Checkout resume
+        uses: actions/checkout@v4
+        with:
+          repository: beaumccartney/resume
+          token: ${{ secrets.RESUME_ACCESS_TOKEN }}
+          path: resume
+          sparse-checkout: master.typ
+
+      - uses: typst-community/setup-typst@v4
+      - name: Build and install resume
+        run: typst compile resume/master.typ build/Beau-McCartney-Resume.pdf
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
