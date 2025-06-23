@@ -191,6 +191,3 @@ use_section = "blog"
 date_formats = ["%Y-%m-%d"]
 time_zone = "MST"
 publish_date_selector = "time#publish-date"
-
-[hooks.post-build]
-file = "hooks/post-build.lua"
