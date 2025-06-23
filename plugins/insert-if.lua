@@ -1,8 +1,8 @@
 -- https://github.com/PataphysicalSociety/soupault-blueprints-blog/blob/main/plugins/insert-if.lua
 -- Configuration
-snippet = config["html"]
-selector = config["selector"]
-check_selector = config["check_selector"]
+local snippet = config["html"]
+local selector = config["selector"]
+local check_selector = config["check_selector"]
 
 -- Plugin code
 

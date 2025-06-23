@@ -1,14 +1,14 @@
 Plugin.require_version("5.0.0")
 
-custom_options        = soupault_config.custom_options
-website_url           = custom_options.website_url
+local custom_options        = soupault_config.custom_options
+local website_url           = custom_options.website_url
 
-use_section           = config.use_section
-date_formats          = config.date_formats
-time_zone             = config.time_zone
-publish_date_selector = config.publish_date_selector
+local use_section           = config.use_section
+local date_formats          = config.date_formats
+local time_zone             = config.time_zone
+local publish_date_selector = config.publish_date_selector
 
-entries = {}
+local entries = {}
 
 local count = size(site_index)
 local i = 1
