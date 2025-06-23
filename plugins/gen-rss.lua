@@ -52,7 +52,7 @@ rss_template = [[
   <description>Beau McCartney's website and blog</description>
   <language>en-us</language>
   <atom:link href="{{website_url}}/rss.xml" rel="self" type="application/rss+xml" />
-  {%- for e in entries %}
+  {%- for e in entries|reverse %}
   <item>
     <title>{{e.title}}</title>
     <link>{{e.link}}</link>
