@@ -11,26 +11,30 @@ local publish_date_selector = config.publish_date_selector
 local entries = {}
 
 local count = size(site_index)
-local i = 1
-while (i <= count) do
-	ix_entry = site_index[i]
-	page_url = website_url..ix_entry.url
+local site_ix, entries_ix = 1, 1
+while (site_ix <= count) do
+	site_index_entry = site_index[site_ix]
 
-	parsed_html = HTML.parse(ix_entry.html_content)
-	publish_date_elem = HTML.select_one(parsed_html, publish_date_selector) -- TODO: deduplicate with soupault.toml
-	if not publish_date_elem then
-		Plugin.fail("blog entry "..index_entry.url.." does not have a publish date")
+	if site_index_entry.nav_path[1] == use_section then
+		page_url = website_url..site_index_entry.url
+
+		parsed_html = HTML.parse(site_index_entry.html_content)
+		publish_date_elem = HTML.select_one(parsed_html, publish_date_selector) -- TODO: deduplicate with soupault.toml
+		if not publish_date_elem then
+			Plugin.fail("blog entry "..index_entry.url.." does not have a publish date")
+		end
+		entry_date = HTML.inner_html(publish_date_elem)
+
+		entries[entries_ix] = {
+			title = site_index_entry.title,
+			guid = page_url,
+			link = page_url,
+			description = String.render_template("<![CDATA[{{html_content}}]]>", {html_content = site_index_entry.html_content}),
+			pubdate = Date.reformat(entry_date, date_formats, "%a, %d %b %Y 12:00:00") .. " " .. time_zone,
+		}
+		entries_ix = entries_ix + 1
 	end
-	entry_date = HTML.inner_html(publish_date_elem)
-
-	entries[i] = {
-		title = ix_entry.title,
-		guid = page_url,
-		link = page_url,
-		description = String.render_template("<![CDATA[{{html_content}}]]>", {html_content = ix_entry.html_content}),
-		pubdate = Date.reformat(entry_date, date_formats, "%a, %d %b %Y 12:00:00") .. " " .. time_zone,
-	}
-	i = i + 1
+	site_ix = site_ix + 1
 end
 
 data = {
