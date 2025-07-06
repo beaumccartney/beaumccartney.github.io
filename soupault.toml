@@ -4,7 +4,7 @@
 [settings]
 # Soupault version that the config was written/generated for
 # Trying to process this config with an older version will result in an error message
-soupault_version = "5.0.0"
+soupault_version = "5.1.0"
 
 # Display progress?
 verbose = true
@@ -107,7 +107,6 @@ page_character_encoding = "utf-8"
 
 
 [index]
-index = true
 extract_after_widgets = ["footnotes"]
 # dump_json = "index.json"
 [index.fields.title]
