@@ -47,7 +47,7 @@ jobs:
           bun-version: latest
 
       - name: Build the site
-        run: ./build.sh
+        run: soupault
 
       - name: Checkout resume
         uses: actions/checkout@v4
