@@ -43,7 +43,7 @@ else:
 
 ## Math
 
-Math rendering courtesy of [katex](katex.org)<fn>right now it's rendered client-side, can I render offline?</fn>
+Math rendering courtesy of [katex](katex.org)<fn>offline rendering is done with micromark's math extension</fn>
 
 Statistical variance can be computed like so: $v = \sum_{i=1}^{n} (x_i - \mu)^2$
 
@@ -52,11 +52,3 @@ Standard deviation is simply the square root of the variance:
 $$
 \sigma = \sqrt{\sum_{i=1}^{n} (x_i - \mu)^2}
 $$
-
-
-same but in a math code block
-
-```math
-\sigma = \sqrt{\sum_{i=1}^{n} (x_i - \mu)^2}
-```
-

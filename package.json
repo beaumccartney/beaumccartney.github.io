@@ -10,6 +10,9 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "highlight.js": "^11.11.1"
+    "highlight.js": "^11.11.1",
+    "micromark": "^4.0.2",
+    "micromark-extension-gfm-strikethrough": "^2.1.0",
+    "micromark-extension-math": "^3.1.0"
   }
 }

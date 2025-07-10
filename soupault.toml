@@ -32,7 +32,7 @@ page_file_extensions = ["htm", "html"]
 # If you use Markdown and want to use the built-in parser,
 # use this option to specify file extensions
 # that you want to be interpreted as Markdown files.
-markdown_extensions = ["md"]
+# markdown_extensions = ["md"]
 
 # By default, soupault uses "clean URLs",
 # that is, $site_dir/page.html is converted to $build_dir/page/index.html
@@ -131,8 +131,8 @@ index_item_template = """<li><time>{{publish_date}}</time> - <a href="{{url}}">{
 # that converts it to HTML and writes it to standard output.
 # For example, if you want to use cmark instead of the built-in Markdown,
 # remove settings.markdown_extensions and add this:
-#[preprocessors]
-#  md = "cmark --unsafe --smart"
+[preprocessors]
+md = "bun run bun_scripts/render-markdown.ts"
 #  adoc = "asciidoctor -o -"
 
 # Pages can be further processed with "widgets"
