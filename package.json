@@ -10,6 +10,8 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "cheerio": "^1.1.0",
+    "handlebars": "^4.7.8",
     "highlight.js": "^11.11.1",
     "micromark": "^4.0.2",
     "micromark-extension-gfm-strikethrough": "^2.1.0",

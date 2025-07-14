@@ -31,15 +31,6 @@ jobs:
       - name: Checkout website
         uses: actions/checkout@v4
         # TODO: sparse checkout only needed files
-      - name: Install soupault
-        env:
-          SOUPAULT_VERSION: "5.1.0"
-          SOUPAULT_FOLDER: soupault-5.1.0-linux-x86_64
-        run: |
-          echo Downloading and unpacking soupault
-          wget https://github.com/PataphysicalSociety/soupault/releases/download/$SOUPAULT_VERSION/$SOUPAULT_FOLDER.tar.gz
-          tar xvf $SOUPAULT_FOLDER.tar.gz
-          sudo mv -v ./$SOUPAULT_FOLDER/soupault /usr/bin
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -47,7 +38,9 @@ jobs:
           bun-version: latest
 
       - name: Build the site
-        run: soupault
+        run: |
+          bun install
+          ./generate.ts
 
       - name: Checkout resume
         uses: actions/checkout@v4

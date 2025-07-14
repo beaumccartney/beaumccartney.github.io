@@ -1,6 +1,6 @@
 # Hello Markdown!
 
-**<time id="publish-date">2025-06-11</time>**
+<publish-date>2025-06-11</publish-date>
 
 A sample page to test some of the markdown features. Don't take any of the code
 or math seriously.

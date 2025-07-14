@@ -30,7 +30,4 @@ me](#contact-info) if you're interested in working with me!
 ## Posts
 
 <div id="blog-entries">
-  <ul>
-  </ul>
-  <a href="/rss.xml">RSS Feed</a>
 </div>
