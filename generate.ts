@@ -4,7 +4,6 @@ import { opendir } from "node:fs/promises";
 
 import path from "node:path";
 import process from "node:process";
-import fs from "node:fs/promises";
 
 import { micromark } from "micromark";
 import { math, mathHtml } from "micromark-extension-math";
