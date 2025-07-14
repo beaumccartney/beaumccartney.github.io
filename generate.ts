@@ -51,7 +51,7 @@ const page_content_template = Handlebars.compile(`{{{content}}}
 <hr/>
 <ol style="list-style-type: none; padding-left: 0;">
   {{#each footnotes}}
-  <li id="{{> footnote_id_template ix=@index}}"><p><a href="#{{> footnote_link_id_template ix=@index}}">{{footnote_number @index}}.</a> {{{this}}}</p></li>
+  <li id="{{> footnote_id_template ix=@index}}"><p><sup><a href="#{{> footnote_link_id_template ix=@index}}">{{footnote_number @index}}.</a></sup> {{{this}}}</p></li>
   {{/each}}
 </ol>
 {{/if}}`);
