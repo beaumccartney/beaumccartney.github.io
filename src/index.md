@@ -1,6 +1,6 @@
 # Beau McCartney
 
-Heyo! I'm Beau. I'm a new graduate in Software Engineering from the University
+Heyo! I'm Beau, a new graduate in Software Engineering from the University
 of Calgary (May 2024). I like graphics programming, playing music, and reading
 about history.
 
@@ -9,11 +9,11 @@ me](#contact-info) if you're interested in working with me!
 
 ## Projects
 
-- root_c <a href="https://github.com/beaumccartney/root_c" target="_blank">github</a> - my all in one, from scratch, C99 codebase for for everything
+- root_c <a href="https://github.com/beaumccartney/root_c" target="_blank">github</a> - my all-in-one, from scratch, C99 codebase for everything
     - base utilities
     - rendering abstraction
     - c code generator from a custom file format
-    - a whole bunch more stuff
+    - a bunch more stuff
 
 ## Random thoughts
 
