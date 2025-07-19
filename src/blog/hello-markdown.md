@@ -43,7 +43,8 @@ else:
 
 ## Math
 
-Math rendering courtesy of [katex](katex.org)<fn>offline rendering is done with micromark's math extension</fn>
+Math rendering courtesy of [katex](https://katex.org)<fn>offline rendering is
+    done with micromark's math extension</fn>
 
 Statistical variance can be computed like so: $v = \sum_{i=1}^{n} (x_i - \mu)^2$
 
