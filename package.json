@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "cheerio": "^1.1.0",
+    "gray-matter": "^4.0.3",
     "highlight.js": "^11.11.1",
     "micromark": "^4.0.2",
     "micromark-extension-gfm-strikethrough": "^2.1.0",

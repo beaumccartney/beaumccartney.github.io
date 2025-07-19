@@ -1,6 +1,9 @@
-# Hello Markdown!
+---
+description: "A test of markdown-related features on my new static site generator"
+publish_date: "2025-06-11"
+---
 
-<publish-date>2025-06-11</publish-date>
+# Hello Markdown!
 
 A sample page to test some of the markdown features. Don't take any of the code
 or math seriously.

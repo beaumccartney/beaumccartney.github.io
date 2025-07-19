@@ -12,6 +12,8 @@ import {
   gfmStrikethroughHtml,
 } from "micromark-extension-gfm-strikethrough";
 
+import matter from "gray-matter";
+
 import * as cheerio from "cheerio";
 
 import hljs from "highlight.js/lib/common";
@@ -46,6 +48,7 @@ await $`cp ${path.join(katex_module, "fonts")}/* ${fonts_out_dir}`;
 const complete_page_template = (
   title: string,
   content: string,
+  description: string,
 ) => `<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -54,7 +57,7 @@ const complete_page_template = (
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <meta name="author" content="Beau McCartney">
-    <meta name="description" content="Beau McCartney - software engineer interested in graphics programming, game dev, and compilers.">
+    <meta name="description" content="${description}">
     <meta
       name="keywords"
       content="personal, portfolio, website, beau, mccartney, Beau McCartney, software, engineer, computer, graphics, gamedev"
@@ -91,8 +94,17 @@ const time_element_template = (thedate: string) =>
 
 const footnote_link_template = (ix: number) =>
   `<sup id="${footnote_link_id_template(ix)}"><a href="#${footnote_id_template(ix)}">${footnote_number(ix)}</a></sup>`;
-async function process_markdown_content(file: Bun.BunFile) {
-  const markdown = await file.bytes();
+
+type Page = {
+  content: string;
+  title: string;
+  description: string;
+  publish_date: string | null;
+};
+async function process_markdown_content(file: Bun.BunFile): Promise<Page> {
+  const with_frontmatter = matter(await file.text());
+
+  const markdown = with_frontmatter.content;
   const converted_html = micromark(markdown, {
     allowDangerousHtml: true,
     extensions: [math(), gfmStrikethrough({ singleTilde: false })],
@@ -162,9 +174,20 @@ async function process_markdown_content(file: Bun.BunFile) {
     .join("\n")}
 </ol>`;
   }
+
+  const description = with_frontmatter.data.description;
+  if (!description || typeof description !== "string") {
+    throw new Error(`page ${file.name} missing description frontmatter`);
+  }
+  const publish_date = with_frontmatter.data.publish_date;
+  if (publish_date != null && typeof publish_date !== "string") {
+    throw new Error(`page ${file.name} gave invalid publish date`);
+  }
   return {
     content,
     title: $page("h1").text(),
+    description,
+    publish_date,
   };
 }
 
@@ -172,7 +195,7 @@ type Post = {
   title: string;
   folder: string;
   publish_date: string;
-  html: string;
+  description: string;
 };
 const posts: Post[] = [];
 for await (const dirent of await opendir(path.join(src_dir, blog_dir))) {
@@ -185,15 +208,13 @@ for await (const dirent of await opendir(path.join(src_dir, blog_dir))) {
   );
   const $post = cheerio.load(post_content.content, {}, false);
 
-  const pub_date_elem = "publish-date";
-  const $pubdate = $post(pub_date_elem);
-  const publish_date = $pubdate.text();
-  if (publish_date.length !== 0) {
-    $pubdate.replaceWith(
-      `<strong>${time_element_template(publish_date)}</strong>`,
-    );
+  const publish_date = post_content.publish_date;
+  if (!publish_date) {
+    throw new Error(`post [${post_content.title}] has no publish date`);
   }
-
+  $post("h1").after(
+    `<p><strong>${time_element_template(publish_date)}</strong></p>`,
+  );
   let post = {
     title: post_content.title,
     folder: path.join(
@@ -201,11 +222,16 @@ for await (const dirent of await opendir(path.join(src_dir, blog_dir))) {
       dirent.name.slice(0, -markdown_extension.length),
     ),
     publish_date,
+    description: post_content.description,
     html: $post.html(),
   };
   posts.push(post);
 
-  const post_page = complete_page_template(post.title, post.html);
+  const post_page = complete_page_template(
+    post.title,
+    post.html,
+    post.description,
+  );
 
   Bun.write(path.join(build_dir, post.folder, "index.html"), post_page);
 }
@@ -221,7 +247,11 @@ for await (const dirent of await opendir(path.join(src_dir, blog_dir))) {
 </ul>
 <a href="/rss.xml">RSS Feed</a>`);
 
-  const home_page = complete_page_template(home.title, $home.html());
+  const home_page = complete_page_template(
+    home.title,
+    $home.html(),
+    home.description,
+  );
 
   Bun.write(path.join(build_dir, "index.html"), home_page);
 }
@@ -247,7 +277,7 @@ const rss_feed = `<?xml version="1.0" encoding="UTF-8" ?>
   <link>${web_url}</link>
   <guid>${web_url}</guid>
   <pubDate>${rss_publish_date}</pubDate>
-  <description><![CDATA[${post.html}]]></description>
+  <description>${post.description}</description>
 </item>
     `;
     })

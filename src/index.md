@@ -1,3 +1,7 @@
+---
+description: "Beau McCartney - software engineer interested in graphics programming, game dev, and compilers."
+---
+
 # Beau McCartney
 
 Heyo! I'm Beau, a new graduate in Software Engineering from the University

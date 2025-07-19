@@ -1,6 +1,9 @@
-# Arbitrarily Nestable Defer Statement in C
+---
+description: "A portable c defer loop macro that can be nested arbitrarily"
+publish_date: "2025-07-18"
+---
 
-<publish-date>2025-07-18</publish-date>
+# Arbitrarily Nestable Defer Statement in C
 
 Defer loops are a common C macro trick:
 
