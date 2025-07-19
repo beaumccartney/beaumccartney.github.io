@@ -7,14 +7,6 @@ about history.
 I'm currently looking for my next opportunity, please [contact
 me](#contact-info) if you're interested in working with me!
 
-## Projects
-
-- root_c <a href="https://github.com/beaumccartney/root_c" target="_blank">github</a> - my all-in-one, from scratch, C99 codebase for everything
-    - base utilities
-    - rendering abstraction
-    - c code generator from a custom file format
-    - a bunch more stuff
-
 ## Random thoughts
 
 - <a href="https://youtu.be/9xA1rSu3qwE?si=guriIWYQWgoOId3p&t=43" target="_blank">3 => 3 major => 6 => 2 => 5 sounds awesome</a>
