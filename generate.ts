@@ -154,6 +154,7 @@ async function process_markdown_content(file: Bun.BunFile): Promise<Page> {
     const language = lang_class.slice("language-".length);
 
     const highlighted = hljs.highlight(html, { language }).value;
+    $code.addClass("hljs"); // XXX: hljs css expects this
 
     $code.html(
       cheerio
