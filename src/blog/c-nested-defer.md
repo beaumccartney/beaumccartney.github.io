@@ -14,10 +14,10 @@ DEFER_LOOP(mutex_lock(&mtx), mutex_unlock(&mtx))
 }
 ```
 
-It's simply a loop whose body is run only once, that takes advantage of the <a
-    href="https://en.wikipedia.org/wiki/Comma_operator#Syntax"
-    target="_blank">somewhat bizarre semantics</a> of C's comma operator to
-execute `begin` before the loop body, and `end` after.
+It's simply a loop whose body is run only once, that takes advantage of the
+[somewhat bizarre
+semantics](https://en.wikipedia.org/wiki/Comma_operator#Syntax) of C's comma
+operator to execute `begin` before the loop body, and `end` after.
 
 It's plausible that you may want to nest defer loops, especially if you've
 built other useful utilities on top of them:
@@ -47,17 +47,16 @@ If shadowing isn't a problem in your context, then this is fine. However, you
 may want to use this construct in multiple places, libraries, etc. In these
 environments, making consumers have to deal with warnings from your code adds
 friction,<fn>Turning warnings on and off for given sections of c code is
-    different for each compiler and a <a
-        href="https://github.com/beaumccartney/root_c/blob/db39ac541d2700a7ba5352fc76049d57defc943f/layers/base/base_strings.c#L1-L16"
-        target="_blank">huge hassle</a>.</fn> and can possibly cause more
-serious problems.<fn>e.g. turning off warnings when `#include`-ing your code,
-    and forgetting to turn them back on again.</fn>
+    different for each compiler and a [huge
+    hassle](https://github.com/beaumccartney/root_c/blob/db39ac541d2700a7ba5352fc76049d57defc943f/layers/base/base_strings.c#L1-L16).</fn>
+and can possibly cause more serious problems.<fn>e.g. turning off warnings when
+    `#include`-ing your code, and forgetting to turn them back on again.</fn>
 
 A fairly obvious approach to removing the shadowing problem is simply <span
     id="unique-ident-code">generating a unique identifier for the loop
-    counter</span>, which can be done with the <a
-    href="https://www.open-std.org/JTC1/sc22/wg14/www/docs/n3457.htm"
-    target="_blank">`__COUNTER__`</a> macro:
+    counter</span>, which can be done with the
+[`__COUNTER__`](https://www.open-std.org/JTC1/sc22/wg14/www/docs/n3457.htm)
+macro:
 
 ```c
 #define GLUE_(A,B) A##B
@@ -71,10 +70,9 @@ A fairly obvious approach to removing the shadowing problem is simply <span
 Note that the `GLUE` macros are just a trick to generate an identifier by
 concatenating the passed in strings.
 
-Unfortunately, `__COUNTER__` isn't standardized, though it is <a
-    href="https://isocpp.org/files/papers/P3384R0.html#rationale-for-standardization"
-    target="_blank">widely supported</a>. If being non-standard isn't
-acceptable, then another approach is needed.
+Unfortunately, `__COUNTER__` isn't standardized, though it is [widely
+supported](https://isocpp.org/files/papers/P3384R0.html#rationale-for-standardization).
+If being non-standard isn't acceptable, then another approach is needed.
 
 Enter the <span id="thread-local-latch-code">thread-local defer loop latch:</span>
 
@@ -93,12 +91,11 @@ This works because each loop writes to `_t_deferloop_latch_` *immediately
 before the loop test*, meaning that any nested our outer loops cannot affect
 the current loop's execution path.
 
-I <a
-    href="https://github.com/nicbarker/clay/blob/91c6d0577409908e4bfa1e6930e8f3cea82ec7f0/clay.h#L104-L141"
-    target="_blank">found</a> this trick in Nic Barker's excellent UI layout
-library, <a href="https://www.nicbarker.com/clay"
-    target="_blank">clay</a>.<fn>The `thread_local` touch is my own. To the
-    best of my knowledge, clay isn't meant to be used from multiple
+I
+[found](https://github.com/nicbarker/clay/blob/91c6d0577409908e4bfa1e6930e8f3cea82ec7f0/clay.h#L104-L141)
+this trick in Nic Barker's excellent UI layout library,
+[clay](https://www.nicbarker.com/clay).<fn>The `thread_local` touch is my own.
+    To the best of my knowledge, clay isn't meant to be used from multiple
     threads.</fn>
 
 There is have one caveat: the loop can't be entirely unrolled and ignored by an
@@ -108,7 +105,8 @@ variable who's entire lifetime and usage is easily visible to the compiler, so
 the information that the loop can only ever run once (and therefore the loop
 latch is redundant) is readily available.
 
-Here's a comparison of the two approaches in <a href="https://godbolt.org/z/MrMeGj381" target="_blank">godbolt</a>.
+Here's a comparison of the two approaches in
+[godbolt](https://godbolt.org/z/MrMeGj381).
 
 So what should you use? If the non-standard nature of `__COUNTER__` is
 acceptable, use the [unique identifier](#unique-ident-code) approach. Else use

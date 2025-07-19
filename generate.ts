@@ -100,6 +100,24 @@ async function process_markdown_content(file: Bun.BunFile) {
   });
 
   const $page = cheerio.load(converted_html, {}, false);
+
+  // TODO: use micromark extensions instead of cheerio to make these changes
+  //  new tab external links
+  //  syntax highlighting
+  //  footnotes
+
+  $page("a").each(function () {
+    const $link = $page(this);
+    const href = $link.attr("href");
+    if (!href) {
+      throw new Error("anchor tag without href");
+    }
+
+    if (href.startsWith("http")) {
+      $link.attr("target", "_blank");
+    }
+  });
+
   $page('*[class^="language-"]').each(function () {
     const $code = $page(this);
     const html = $code.html();
