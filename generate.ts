@@ -22,6 +22,8 @@ import { $ } from "bun";
 
 process.chdir(import.meta.dir);
 
+const website_url = "https://beaumccartney.com";
+
 const src_dir = "src";
 const build_dir = "build";
 const css_dir = "css";
@@ -49,6 +51,9 @@ const complete_page_template = (
   title: string,
   content: string,
   description: string,
+  url: string,
+  og_type: string,
+  og_extras: { property: string; content: string }[],
 ) => `<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -63,6 +68,11 @@ const complete_page_template = (
       content="personal, portfolio, website, beau, mccartney, Beau McCartney, software, engineer, computer, graphics, gamedev"
     >
     <meta name="robots" content="index, follow">
+    <meta property="og:title" content="${title}">
+    <meta property="og:url" content="${url}">
+    <meta property="og:type" content="${og_type}">
+    <meta property="og:description" content="${description}">
+    ${og_extras.map((extra) => `<meta property="${extra.property}" content="${extra.content}">`).join("\n")}
 
     <link rel="stylesheet" href="${path.join("/", css_dir, katex_css_out)}">
 
@@ -194,6 +204,7 @@ async function process_markdown_content(file: Bun.BunFile): Promise<Page> {
 type Post = {
   title: string;
   folder: string;
+  url: string;
   publish_date: string;
   description: string;
 };
@@ -215,25 +226,34 @@ for await (const dirent of await opendir(path.join(src_dir, blog_dir))) {
   $post("h1").after(
     `<p><strong>${time_element_template(publish_date)}</strong></p>`,
   );
-  let post = {
+  const folder = path.join(
+    blog_dir,
+    dirent.name.slice(0, -markdown_extension.length),
+  );
+  const post: Post = {
     title: post_content.title,
-    folder: path.join(
-      blog_dir,
-      dirent.name.slice(0, -markdown_extension.length),
-    ),
+    folder,
+    url: path.join(website_url, folder),
     publish_date,
     description: post_content.description,
-    html: $post.html(),
   };
   posts.push(post);
 
   const post_page = complete_page_template(
     post.title,
-    post.html,
+    $post.html(),
     post.description,
+    post.url,
+    "article",
+    [
+      {
+        property: "article:published_time",
+        content: post.publish_date,
+      },
+    ],
   );
 
-  Bun.write(path.join(build_dir, post.folder, "index.html"), post_page);
+  Bun.write(path.join(build_dir, folder, "index.html"), post_page);
 }
 
 {
@@ -251,12 +271,23 @@ for await (const dirent of await opendir(path.join(src_dir, blog_dir))) {
     home.title,
     $home.html(),
     home.description,
+    website_url,
+    "profile",
+    [
+      {
+        property: "profile:first_name",
+        content: "Beau",
+      },
+      {
+        property: "profile:last_name",
+        content: "McCartney",
+      },
+    ],
   );
 
   Bun.write(path.join(build_dir, "index.html"), home_page);
 }
 
-const website_url = "https://beaumccartney.com";
 const rss_feed = `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 
@@ -270,12 +301,11 @@ const rss_feed = `<?xml version="1.0" encoding="UTF-8" ?>
     .map((post) => {
       const date = new Date(post.publish_date);
       const rss_publish_date = date.toUTCString();
-      const web_url = path.join(website_url, post.folder);
 
       return `<item>
   <title>${post.title}</title>
-  <link>${web_url}</link>
-  <guid>${web_url}</guid>
+  <link>${post.url}</link>
+  <guid>${post.url}</guid>
   <pubDate>${rss_publish_date}</pubDate>
   <description>${post.description}</description>
 </item>
