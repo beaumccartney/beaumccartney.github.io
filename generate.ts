@@ -54,10 +54,10 @@ const complete_page_template = (
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <meta name="author" content="Beau McCartney">
-    <meta name="description" content="Beau McCartney - a new graduate software engineer specializing in graphics programming and compilers. Looking for opportunities in game dev and graphics">
+    <meta name="description" content="Beau McCartney - software engineer interested in graphics programming, game dev, and compilers.">
     <meta
       name="keywords"
-      content="personal, portfolio, website, beau, mccartney, Beau McCartney, software, engineer, computer, graphics, computer graphics, gamedev, game developer, low-level, low level programming systems, program, programming, code, coding, developer, C programming, job"
+      content="personal, portfolio, website, beau, mccartney, Beau McCartney, software, engineer, computer, graphics, gamedev"
     >
     <meta name="robots" content="index, follow">
 
