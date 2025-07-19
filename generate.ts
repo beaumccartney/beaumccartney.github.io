@@ -217,7 +217,11 @@ for await (const dirent of await opendir(path.join(src_dir, blog_dir))) {
   const post_content = await process_markdown_content(
     Bun.file(path.join(dirent.parentPath, dirent.name)),
   );
-  const $post = cheerio.load(post_content.content, {}, false);
+  const $post = cheerio.load(
+    `<article>\n${post_content.content}\n</article>`,
+    {},
+    false,
+  );
 
   const publish_date = post_content.publish_date;
   if (!publish_date) {
