@@ -42,11 +42,12 @@ MUTEX_SCOPE(mtx)
 }
 ```
 
-When this is expanded, both defer loops will declare the loop counter variable,
-and the inner variable will shadow the outer variable. Depending on your
-compiler and build process, this may be a warning or error.
+However, there's a problem: when this is expanded, both defer loops will
+declare the loop counter variable, and the inner variable will shadow the outer
+variable. Depending on your compiler and build process, this may be a warning
+or error.
 
-If shadowing isn't a problem in your context, then this is fine. However, you
+If shadowing isn't a problem in your context, then this is fine. That said, you
 may want to use this construct in multiple places, libraries, etc. In these
 environments, making consumers have to deal with warnings from your code adds
 friction,<fn>Turning warnings on and off for given sections of c code is
@@ -101,7 +102,7 @@ this trick in Nic Barker's excellent UI layout library,
     To the best of my knowledge, clay isn't meant to be used from multiple
     threads.</fn>
 
-There is have one caveat: the loop can't be entirely unrolled and ignored by an
+There is one caveat: the loop can't be entirely unrolled and ignored by an
 optimizer. I think this is because reads/writes to a global/thread-local
 variable cannot be ignored. With the usual approach, the loop latch is a local
 variable who's entire lifetime and usage is easily visible to the compiler, so
