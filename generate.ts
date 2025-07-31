@@ -310,7 +310,7 @@ const rss_feed = `<?xml version="1.0" encoding="UTF-8" ?>
       return `<item>
   <title>${post.title}</title>
   <link>${post.url}</link>
-  <guid>${post.url}</guid>
+  <guid isPermaLink="true">${post.url}</guid>
   <pubDate>${rss_publish_date}</pubDate>
   <description>${post.description}</description>
 </item>
