@@ -76,7 +76,7 @@ const complete_page_template = (
 
     <link rel="stylesheet" href="${path.join("/", css_dir, katex_css_out)}">
 
-    <link rel="stylesheet" href="${path.join("/", css_dir, "sakura-dark.css")}" media="screen and (prefers-color-scheme: dark)">
+    <link rel="stylesheet" href="${path.join("/", css_dir, "sakura-dark.css")}">
 
     <link rel="stylesheet" href="${path.join("/", css_dir, highlight_css_out)}">
 
