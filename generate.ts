@@ -5,18 +5,21 @@ import { opendir } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 
-import { micromark } from "micromark";
-import { math, mathHtml } from "micromark-extension-math";
-import {
-  gfmStrikethrough,
-  gfmStrikethroughHtml,
-} from "micromark-extension-gfm-strikethrough";
-
-import matter from "gray-matter";
+import { unified } from "unified";
+import remarkParse from "remark-parse";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import remarkRehype from "remark-rehype";
+import rehypeRaw from "rehype-raw";
+import rehypeKatex from "rehype-katex";
+import rehypeHighlight from "rehype-highlight";
+import rehypeExternalLinks from "rehype-external-links";
+import rehypeStringify from "rehype-stringify";
+import { visit } from "unist-util-visit";
+import remarkFrontmatter from "remark-frontmatter";
+import { matter } from "vfile-matter";
 
 import * as cheerio from "cheerio";
-
-import hljs from "highlight.js/lib/common";
 
 import { $ } from "bun";
 
@@ -112,93 +115,104 @@ type Page = {
   publish_date: string | null;
 };
 async function process_markdown_content(file: Bun.BunFile): Promise<Page> {
-  const with_frontmatter = matter(await file.text());
+  const markdown = await file.text();
 
-  const markdown = with_frontmatter.content;
-  const converted_html = micromark(markdown, {
-    allowDangerousHtml: true,
-    extensions: [math(), gfmStrikethrough({ singleTilde: false })],
-    htmlExtensions: [mathHtml(), gfmStrikethroughHtml()],
-  });
-
-  const $page = cheerio.load(converted_html, {}, false);
-
-  // TODO: use micromark extensions instead of cheerio to make these changes
-  //  new tab external links
-  //  syntax highlighting
-  //  footnotes
-
-  $page("a").each(function () {
-    const $link = $page(this);
-    const href = $link.attr("href");
-    if (!href) {
-      throw new Error("anchor tag without href");
-    }
-
-    if (href.startsWith("http")) {
-      $link.attr("target", "_blank");
-    }
-  });
-
-  $page('*[class^="language-"]').each(function () {
-    const $code = $page(this);
-    const html = $code.html();
-    if (html === null) {
-      throw new Error(); // REVIEW: how can this happen and what's a decent message?
-    }
-
-    const lang_class = $code.attr("class");
-    if (lang_class === undefined) {
-      throw new Error("couldn't find language for code block");
-    }
-    const language = lang_class.slice("language-".length);
-
-    const highlighted = hljs.highlight(html, { language }).value;
-    $code.addClass("hljs"); // XXX: hljs css expects this
-
-    $code.html(
-      cheerio
-        .load(highlighted, { xml: { encodeEntities: false } }, false) // don't put html escapes into the highlighted html
-        .html(),
-    );
-  });
-
-  const footnotes = $page("fn")
-    .map(function (ix) {
-      const $footnote = $page(this);
-      const footnote = $footnote.html();
-      $footnote.replaceWith(footnote_link_template(ix));
-      return footnote;
-    })
-    .toArray();
-
-  let content = $page.html();
-  if (footnotes.length) {
-    content += `
-<hr/>
-<ol style="list-style-type: none; padding-left: 0;">
-  ${footnotes
-    .map(
-      (note, ix) =>
-        `<li id="${footnote_id_template(ix)}"><p><sup><a href="#${footnote_link_id_template(ix)}">${footnote_number(ix)}.</a></sup> ${note}</p></li>`,
-    )
-    .join("\n")}
-</ol>`;
+  function rehype_fn_footnotes() {
+    return (tree: any) => {
+      const notes: any[] = [];
+      visit(tree, "element", (node: any, index: number | undefined, parent: any) => {
+        if (node.tagName === "fn" && parent && typeof index === "number") {
+          const ix = notes.length;
+          const note_children = node.children ?? [];
+          notes.push(note_children);
+          parent.children[index] = {
+            type: "element",
+            tagName: "sup",
+            properties: { id: footnote_link_id_template(ix) },
+            children: [
+              {
+                type: "element",
+                tagName: "a",
+                properties: { href: `#${footnote_id_template(ix)}` },
+                children: [{ type: "text", value: String(footnote_number(ix)) }],
+              },
+            ],
+          };
+        }
+      });
+      if (notes.length) {
+        (tree.children as any[]).push({ type: "element", tagName: "hr", properties: {}, children: [] });
+        const ol_children = notes.map((note, ix) => ({
+          type: "element",
+          tagName: "li",
+          properties: { id: footnote_id_template(ix) },
+          children: [
+            {
+              type: "element",
+              tagName: "p",
+              properties: {},
+              children: [
+                {
+                  type: "element",
+                  tagName: "sup",
+                  properties: {},
+                  children: [
+                    {
+                      type: "element",
+                      tagName: "a",
+                      properties: { href: `#${footnote_link_id_template(ix)}` },
+                      children: [{ type: "text", value: `${footnote_number(ix)}.` }],
+                    },
+                  ],
+                },
+                { type: "text", value: " " },
+                ...note,
+              ],
+            },
+          ],
+        }));
+        (tree.children as any[]).push({
+          type: "element",
+          tagName: "ol",
+          properties: { style: "list-style-type: none; padding-left: 0;" },
+          children: ol_children,
+        });
+      }
+    };
   }
 
-  const description = with_frontmatter.data.description;
+  const file_out = await unified()
+    .use(remarkParse)
+    .use(remarkFrontmatter, ['yaml'])
+    .use(() => (_: any, file_v: any) => { matter(file_v); })
+    .use(remarkGfm, { singleTilde: false })
+    .use(remarkMath)
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeRaw)
+    .use(rehypeKatex)
+    .use(rehypeExternalLinks, { target: "_blank", rel: [] })
+    .use(rehypeHighlight)
+    .use(rehype_fn_footnotes)
+    .use(rehypeStringify, { allowDangerousHtml: true })
+    .process(markdown);
+
+  const html = String(file_out);
+  const $page = cheerio.load(html, {}, false);
+
+  const fm = (file_out.data).matter as Record<string, unknown> | undefined;
+  const description = fm?.description;
   if (!description || typeof description !== "string") {
     throw new Error(`page ${file.name} missing description frontmatter`);
   }
-  const publish_date = with_frontmatter.data.publish_date;
+  const publish_date = fm?.publish_date;
   if (publish_date != null && typeof publish_date !== "string") {
     throw new Error(`page ${file.name} gave invalid publish date`);
   }
   return {
-    content,
+    content: html,
     title: $page("h1").text(),
     description,
-    publish_date,
+    publish_date: (publish_date as string | undefined) ?? null,
   };
 }
 
