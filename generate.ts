@@ -126,7 +126,7 @@ async function process_markdown_content(file: Bun.BunFile): Promise<Page> {
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
     .use(rehypeKatex)
-    .use(rehypeExternalLinks, { target: "_blank", rel: [] })
+    .use(rehypeExternalLinks, { target: "_blank", rel: ["nofollow", "noopener", "noreferrer"] })
     .use(rehypeHighlight)
     .use(() => function(tree: Root) {
       const notes: ElementContent[][] = [];
