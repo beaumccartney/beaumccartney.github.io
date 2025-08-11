@@ -324,8 +324,7 @@ const rss_feed = `<?xml version="1.0" encoding="UTF-8" ?>
   <guid isPermaLink="true">${post.url}</guid>
   <pubDate>${rss_publish_date}</pubDate>
   <description>${post.description}</description>
-</item>
-    `;
+</item>`;
     })
     .join("\n")}
 </channel>
