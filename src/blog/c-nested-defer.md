@@ -50,9 +50,9 @@ or error.
 If shadowing isn't a problem in your context, then this is fine. That said, you
 may want to use this construct in multiple places, libraries, etc. In these
 environments, making consumers have to deal with warnings from your code adds
-friction,<fn>Turning warnings on and off for given sections of c code is
+friction<fn>Turning warnings on and off for given sections of c code is
     different for each compiler and a [huge
-    hassle](https://github.com/beaumccartney/root_c/blob/db39ac541d2700a7ba5352fc76049d57defc943f/layers/base/base_strings.c#L1-L16).</fn>
+    hassle](https://github.com/beaumccartney/root_c/blob/db39ac541d2700a7ba5352fc76049d57defc943f/layers/base/base_strings.c#L1-L16).</fn>,
 and can possibly cause more serious problems.<fn>e.g. turning off warnings when
     `#include`-ing your code, and forgetting to turn them back on again.</fn>
 
