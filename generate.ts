@@ -19,6 +19,8 @@ import { visit } from "unist-util-visit";
 import remarkFrontmatter from "remark-frontmatter";
 import { matter } from "vfile-matter";
 
+import type { ElementContent, Root } from "hast";
+
 import * as cheerio from "cheerio";
 
 import { $ } from "bun";
@@ -114,13 +116,23 @@ type Page = {
 async function process_markdown_content(file: Bun.BunFile): Promise<Page> {
   const markdown = await file.text();
 
-  function rehype_fn_footnotes() {
-    return (tree: any) => {
-      const notes: any[] = [];
-      visit(tree, "element", (node: any, index: number | undefined, parent: any) => {
+  const file_out = await unified()
+    .use(remarkParse)
+    .use(remarkFrontmatter, ['yaml'])
+    .use(() => (_, file_v) => { matter(file_v); })
+    .use(remarkGfm, { singleTilde: false })
+    .use(remarkMath)
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeRaw)
+    .use(rehypeKatex)
+    .use(rehypeExternalLinks, { target: "_blank", rel: [] })
+    .use(rehypeHighlight)
+    .use(() => function(tree: Root) {
+      const notes: ElementContent[][] = [];
+      visit(tree, "element", (node, index, parent) => {
         if (node.tagName === "fn" && parent && typeof index === "number") {
           const ix = notes.length;
-          const note_children = node.children ?? [];
+          const note_children = node.children;
           notes.push(note_children);
           parent.children[index] = {
             type: "element",
@@ -138,8 +150,8 @@ async function process_markdown_content(file: Bun.BunFile): Promise<Page> {
         }
       });
       if (notes.length) {
-        (tree.children as any[]).push({ type: "element", tagName: "hr", properties: {}, children: [] });
-        const ol_children = notes.map((note, ix) => ({
+        tree.children.push({ type: "element", tagName: "hr", properties: {}, children: [] });
+        const ol_children: ElementContent[] = notes.map((note, ix) => ({
           type: "element",
           tagName: "li",
           properties: { id: footnote_id_template(ix) },
@@ -168,48 +180,35 @@ async function process_markdown_content(file: Bun.BunFile): Promise<Page> {
             },
           ],
         }));
-        (tree.children as any[]).push({
+        tree.children.push({
           type: "element",
           tagName: "ol",
           properties: { style: "list-style-type: none; padding-left: 0;" },
           children: ol_children,
         });
       }
-    };
-  }
-
-  const file_out = await unified()
-    .use(remarkParse)
-    .use(remarkFrontmatter, ['yaml'])
-    .use(() => (_: any, file_v: any) => { matter(file_v); })
-    .use(remarkGfm, { singleTilde: false })
-    .use(remarkMath)
-    .use(remarkRehype, { allowDangerousHtml: true })
-    .use(rehypeRaw)
-    .use(rehypeKatex)
-    .use(rehypeExternalLinks, { target: "_blank", rel: [] })
-    .use(rehypeHighlight)
-    .use(rehype_fn_footnotes)
+    })
     .use(rehypeStringify, { allowDangerousHtml: true })
     .process(markdown);
 
   const html = String(file_out);
   const $page = cheerio.load(html, {}, false);
 
-  const fm = (file_out.data).matter as Record<string, unknown> | undefined;
+  const fm = file_out.data.matter as Record<string, unknown> | undefined;
   const description = fm?.description;
   if (!description || typeof description !== "string") {
     throw new Error(`page ${file.name} missing description frontmatter`);
   }
   const publish_date = fm?.publish_date;
-  if (publish_date != null && typeof publish_date !== "string") {
+  if (publish_date !== undefined && typeof publish_date !== "string") {
     throw new Error(`page ${file.name} gave invalid publish date`);
   }
+
   return {
     content: html,
     title: $page("h1").text(),
     description,
-    publish_date: (publish_date as string | undefined) ?? null,
+    publish_date: publish_date ?? null,
   };
 }
 
