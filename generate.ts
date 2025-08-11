@@ -14,6 +14,7 @@ import rehypeRaw from "rehype-raw";
 import rehypeKatex from "rehype-katex";
 import rehypeHighlight from "rehype-highlight";
 import rehypeExternalLinks from "rehype-external-links";
+import rehypeFormat from "rehype-format";
 import rehypeStringify from "rehype-stringify";
 import { visit } from "unist-util-visit";
 import remarkFrontmatter from "remark-frontmatter";
@@ -188,6 +189,7 @@ async function process_markdown_content(file: Bun.BunFile): Promise<Page> {
         });
       }
     })
+    .use(rehypeFormat)
     .use(rehypeStringify, { allowDangerousHtml: true })
     .process(markdown);
 
