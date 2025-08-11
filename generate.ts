@@ -105,9 +105,6 @@ const footnote_id_template = (ix: number) => `fn-${ix}`;
 const time_element_template = (thedate: string) =>
   `<time datetime="${thedate}">${thedate}</time>`;
 
-const footnote_link_template = (ix: number) =>
-  `<sup id="${footnote_link_id_template(ix)}"><a href="#${footnote_id_template(ix)}">${footnote_number(ix)}</a></sup>`;
-
 type Page = {
   content: string;
   title: string;
