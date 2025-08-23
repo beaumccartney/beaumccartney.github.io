@@ -92,7 +92,7 @@ _Thread_local int8_t _t_deferloop_latch_;
 ```
 
 This works because each loop writes to `_t_deferloop_latch_` *immediately
-before the loop test*, meaning that any nested our outer loops cannot affect
+before the loop test*, meaning that any nested or outer loops cannot affect
 the current loop's execution path.
 
 I
