@@ -1,0 +1,96 @@
+package main
+
+import "path/filepath"
+
+// "time"
+// "log"
+
+type Metatag struct {
+	Property, Content string
+}
+
+templ time_elem(pubdate string) {
+	<time datetime={ pubdate }>{ pubdate }</time>
+}
+
+templ layout(title string, description string, relative_url string, og_type string, metas []Metatag) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="utf-8"/>
+			<title>{ title }</title>
+			<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			<meta name="author" content="Beau McCartney"/>
+			<meta name="description" content={ description }/>
+			<meta
+				name="keywords"
+				content="personal, portfolio, website, beau, mccartney, Beau McCartney, software, engineer, computer, graphics, gamedev"
+			/>
+			<meta name="robots" content="index, follow"/>
+			<meta property="og:title" content={ title }/>
+			<meta property="og:url" content={ absolute_url(relative_url) }/>
+			<meta property="og:type" content={ og_type }/>
+			<meta property="og:description" content={ description }/>
+			for _, metatag := range metas {
+				<meta property={ metatag.Property } content={ metatag.Content }/>
+			}
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakura.css/css/sakura-dark.css"/>
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/styles/base16/gruvbox-dark-medium.min.css"/>
+			<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/highlight.min.js"></script>
+			<script>hljs.highlightAll();</script>
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.css" integrity="sha384-zwe6pW3vNpSAm9N5nxs4DwK8QeN16vV8RucloafZsrekIU7xKiiuqy4HLWkU2Riu" crossorigin="anonymous"/>
+			<link rel="alternate" type="application/rss+xml" title="RSS" href={ filepath.Join("/", RSS_FILE) }/>
+			<script data-goatcounter="https://beaumccartney.goatcounter.com/count" async src={ "//gc.zgo.at/count.js" }></script>
+		</head>
+		<body>
+			<main>
+				{ children... }
+			</main>
+		</body>
+	</html>
+}
+
+templ blog_page(content string, title string, description string, relative_url string, pubdate string, footnotes []string) {
+	@layout(title, description, relative_url, "article", []Metatag{{Property: "article:published_time", Content: pubdate}}) {
+                <article>
+                        <header>
+                                <h1>{ title }</h1>
+                                <p><strong>@time_elem(pubdate)</strong></p>
+                        </header>
+                        @templ.Raw(content)
+                        @footnote_block(footnotes)
+                </article>
+	}
+}
+
+templ index_page(content string, title string, description string, footnotes []string) {
+	@layout(title, description, "", "profile", []Metatag{{Property: "profile:first_name", Content: "Beau"}, {Property: "profile:last_name", Content: "McCartney"}}) {
+		<header>
+			<h1>{ title }</h1>
+		</header>
+		@templ.Raw(content)
+		@footnote_block(footnotes)
+	}
+}
+
+templ footnote_block(footnotes []string) {
+	if len(footnotes) > 0 {
+		<hr/>
+		<footer>
+			<ol style="list-style-type: none; padding-left: 0;">
+				for ix, note := range footnotes {
+					<li id={ footnote_link_target_id(ix) }><p><sup><a href={ "#" + footnote_backlink_target_id(ix) }>{ footnote_number(ix) }.</a></sup>@templ.Raw(" " + note) </p></li>
+				}
+			</ol>
+		</footer>
+	}
+}
+
+templ posts_index(posts []Post) {
+	<ul>
+		for _, post := range posts {
+			<li>@time_elem(post.Pubdate) <a href={ filepath.Join("/", filepath.Dir(post.Relative_url)) }>{ post.Title }</a></li>
+		}
+	</ul>
+	<a href="/rss.xml">RSS Feed</a>
+}
