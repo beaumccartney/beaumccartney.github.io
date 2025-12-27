@@ -250,7 +250,7 @@ for await (const dirent of await opendir(path.join(src_dir, blog_dir))) {
   const post: Post = {
     title: post_content.title,
     folder,
-    url: path.join(website_url, folder),
+    url: website_url + '/' + folder,
     publish_date,
     description: post_content.description,
   };
