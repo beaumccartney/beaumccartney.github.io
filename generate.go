@@ -17,8 +17,6 @@ import (
 
 	"text/template"
 
-	"golang.org/x/net/html"
-
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
@@ -39,6 +37,9 @@ const (
 
 	RSS_FILE = "rss.xml"
 	MD_EXTENSION = ".md"
+
+	FOOTNOTE_PLACEHOLDER_ID = "footnotes-placeholder"
+	FOOTNOTES_PLACEHOLDER = `<div id="` + FOOTNOTE_PLACEHOLDER_ID +`"></div>`
 )
 
 type Post struct {
@@ -139,88 +140,97 @@ func main() {
 				fmt.Printf("converted for [%s]\n\n%s\n\n\n\n", md_path, &converted_html)
 			}
 
-			var doc *goquery.Document
+			var (
+				page_content string
+				post Post
+				title string
+			)
 			{
-				ctx := &html.Node{
-					Type:     html.ElementNode,
-					DataAtom: atom.Div,
-					Data:     "div",
-				}
-				ns, err := html.ParseFragment(strings.NewReader(data), ctx)
+				doc, err := goquery.NewDocumentFromReader(bytes.NewReader(page_html))
 				if err != nil {
 					log.Fatal(err)
 				}
-				doc, err = goquery.NewDocumentFromNode(&ctx)
-				if err != nil {
-					log.Fatal(err)
+
+				{
+					h1 := doc.Find("h1")
+					title = h1.Text()
+					h1.Remove()
 				}
 			}
-
-			var title string
-			{
-				h1 := doc.Find("h1")
-				title = h1.Text()
-				h1.Remove()
-			}
-
-			var footnotes []string
-			doc.Find("fn").Each(func(ix int, s *goquery.Selection) {
-				note, err := s.Html()
-				if err != nil { log.Fatal(err) }
-				footnotes = append(footnotes, note)
-				fn_link := fmt.Sprintf(
-					"<sup id=\"%s\"><a href=\"#%s\">%d</a></sup>",
-					footnote_backlink_target_id(ix),
-					footnote_link_target_id(ix),
-					footnote_number(ix),
-				)
-				s.ReplaceWithHtml(fn_link)
-			})
-
-			var final_content string
-			if final_content, err = doc.Html(); err != nil {
-				log.Fatal(err)
-			}
-			fmt.Printf("content for [%s]\n\n%s\n\n\n\n", md_path, final_content)
 
 			description := fm["description"]
-			if strings.HasPrefix(md_path, BLOG_PATH) {
-				var page_html bytes.Buffer
-
+			var page_html bytes.Buffer
+			isblog := strings.HasPrefix(md_path, BLOG_PATH)
+			isindex := md_path == "index" + MD_EXTENSION
+			if isblog {
 				pubdate := fm["publish_date"]
 
 				filename := filepath.Base(md_path)
 				filename_no_ext := filename[:len(filename)-len(filepath.Ext(filename))]
 				dst_relative_path := filepath.Join(BLOG_PATH, filename_no_ext, "index.html")
-				if err = blog_page(
-					final_content,
-					title,
-					description,
-					dst_relative_path,
-					pubdate,
-					footnotes,
-				).Render(context.Background(), &page_html); err != nil {
-					log.Fatal(err)
-				}
-				posts = append(posts, Post{
+				post = Post{
 					Title: title,
 					Relative_url: dst_relative_path,
 					Description: description,
 					Pubdate: pubdate,
-					Html: page_html,
-				})
-			} else if md_path == "index" + MD_EXTENSION {
-				err = index_page(
-					final_content,
+				}
+				if err = blog_page(
+					page_content,
 					title,
 					description,
-					footnotes,
-				).Render(context.Background(), &index_page_html)
+					dst_relative_path,
+					pubdate,
+				).Render(context.Background(), &page_html); err != nil {
+					log.Fatal(err)
+				}
+			} else if isindex {
+				err = index_page(
+					page_content,
+					title,
+					description,
+				).Render(context.Background(), &page_html)
 			} else {
 				log.Fatal("markdown file that's not blog or index encountered")
 			}
 			if err != nil {
 				log.Fatalf("couldn't render page template for [%s]", md_path)
+			}
+
+			var html_with_footnotes string
+			{
+				doc, err := goquery.NewDocumentFromReader(&page_html)
+				h1 := doc.Find("h1")
+				h1.Remove()
+
+				var footnotes []string
+				doc.Find("fn").Each(func(ix int, s *goquery.Selection) {
+					note, err := s.Html()
+					if err != nil { log.Fatal(err) }
+					footnotes = append(footnotes, note)
+					fn_link := fmt.Sprintf(
+						"<sup id=\"%s\"><a href=\"#%s\">%d</a></sup>",
+						footnote_backlink_target_id(ix),
+						footnote_link_target_id(ix),
+						footnote_number(ix),
+					)
+					s.ReplaceWithHtml(fn_link)
+				})
+
+				err = footnote_block(footnotes).Render(
+					context.Background(),
+					strings.NewWriter(bytes.NewBufferString(html_with_footnotes)),
+				)
+				if page_content, err = doc.Html(); err != nil {
+					log.Fatal(err)
+				}
+				fmt.Printf("content for [%s]\n\n%s\n\n\n\n", md_path, page_content)
+			}
+
+			if isblog {
+				post.Html = html_with_footnotes
+				posts = append(posts, post)
+			} else if isindex {
+				index_page_html = html_with_footnotes
 			}
 		}
 

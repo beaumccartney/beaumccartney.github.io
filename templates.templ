@@ -50,7 +50,7 @@ templ layout(title string, description string, relative_url string, og_type stri
 	</html>
 }
 
-templ blog_page(content string, title string, description string, relative_url string, pubdate string, footnotes []string) {
+templ blog_page(content string, title string, description string, relative_url string, pubdate string) {
 	@layout(title, description, relative_url, "article", []Metatag{{Property: "article:published_time", Content: pubdate}}) {
                 <article>
                         <header>
@@ -58,18 +58,18 @@ templ blog_page(content string, title string, description string, relative_url s
                                 <p><strong>@time_elem(pubdate)</strong></p>
                         </header>
                         @templ.Raw(content)
-                        @footnote_block(footnotes)
+                        {FOOTNOTES_PLACEHOLDER}
                 </article>
 	}
 }
 
-templ index_page(content string, title string, description string, footnotes []string) {
+templ index_page(content string, title string, description string) {
 	@layout(title, description, "", "profile", []Metatag{{Property: "profile:first_name", Content: "Beau"}, {Property: "profile:last_name", Content: "McCartney"}}) {
 		<header>
 			<h1>{ title }</h1>
 		</header>
 		@templ.Raw(content)
-		@footnote_block(footnotes)
+		{FOOTNOTES_PLACEHOLDER}
 	}
 }
 
