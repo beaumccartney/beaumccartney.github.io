@@ -20,14 +20,36 @@ tracks that are recorded then mixed together to get the final product.
 
 The rest of this article will be tools that can help you transcribe.
 
-## Music Player
+## Music Player/Audio Editor
 
 Anything that can play the common audio and video formats (mp3/4, webm, etc.)
 will work great. I like [IINA](https://iina.io/). The things to look for when
 choosing are:
 1. Fine-grained control over the playback speed - something better than 0.25x
    increments
-1. Control over the EQ of sound playback.
+1. Control over the EQ of sound playback
+
+UPDATE:
+
+I've started using [audacity](https://www.audacityteam.org/) to play music.
+It's free. If open source is your preference, then look into
+[tenacity](https://codeberg.org/tenacityteam/tenacity), a fork of audacity.
+
+The fine grained controls on when to start playback and looping are enormously
+helpful, and the waveform view can be helpful when navigating the track (e.g.
+finding a big shot or skipping empty padding).
+
+One trick I use constantly is to make small loops directly over small phrases or
+notes I can't quite catch, and just listen to it until it clicks. No slowing
+playback, still relying on the ear, just improved uptime of actually listening
+to the music relative to messing with the music playback.
+
+Amending the above list of features desirable in a music player/audio editor:
+1. Waveform view
+1. Fine grained scrubbing or choice of where playback starts.
+1. Looping! Ideally click and drag, as you can be more precise (especially with
+   the help of a waveform view). Its helpful if the loop can be moved or
+   adjusted.
 
 ## Notation Software
 
