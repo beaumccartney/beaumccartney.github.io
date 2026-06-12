@@ -42,7 +42,7 @@ finding a big shot or skipping empty padding).
 One trick I use constantly is to make small loops directly over small phrases or
 notes I can't quite catch, and just listen to it until it clicks. No slowing
 playback, still relying on the ear, just improved uptime of actually listening
-to the music relative to messing with the music playback.
+to the music.
 
 Amending the above list of features desirable in a music player/audio editor:
 1. Waveform view
@@ -69,8 +69,8 @@ have everything you need to get started.
 
 This is the other most important takeaway from this article.
 
-Get a pair of in-ear monitors ("IEMs"), and use them to transcribe. Actually just
-get them anyways they're amazing.
+Get a pair of in-ear monitors ("IEMs"), or studio headphones and use them to
+transcribe.
 
 For those who aren't familiar, IEMs are headphones designed for performing on
 stage. They have high sound quality and rubber earbuds that form a seal on your
